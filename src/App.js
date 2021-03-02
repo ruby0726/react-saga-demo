@@ -1,25 +1,46 @@
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import { connect } from 'react-redux';
+import { increate, increateAsync, fetch_user } from './actions/counter';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+
+  render() {
+    const { isFetch, error, user } = this.props.users;
+    let data = "";
+    if (isFetch) {
+      data = '正在加载中。。。'
+    } else if (user) {
+      data = user.data[0]['name'];
+    } else if (error) {
+      data = error.message;
+    }
+    return (
+      <div className="App">
+        {/* 触发dispatch，发送对应的action */}
+        <div style={{ marginBottom: 20 }}>
+          <p>{this.props.counter}</p>
+          <button onClick={() => this.props.increate()}>新增</button>
+          &nbsp;&nbsp;&nbsp;
+          <button onClick={() => this.props.increateAsync()}>异步新增</button>
+          &nbsp;&nbsp;&nbsp;
+          <button onClick={() => this.props.fetch_user()}>axios请求</button>
+        </div>
+        <h2>{data}</h2>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    counter: state.counter, // state 对应的 key, 在 reducers/index.js 中声明。
+    users: state.us
+  }
+}
+
+// mapStateToProps，在 reducers/index.js 中，通过 connect 导入对应的 state
+// { increate, increateAsync, fetch_user } ,通过 connect 导入对应的action，在view触发相应的action
+export default connect(mapStateToProps, { increate, increateAsync, fetch_user })(App);
+
+
