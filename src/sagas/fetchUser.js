@@ -6,7 +6,6 @@ import axios from 'axios'
 
 function* fetch_user() {
   try {
-    debugger
     const users = yield call(axios.get, 'https://jsonplaceholder.typicode.com/users'); // axios.get('https://jsonplaceholder.typicode.com/users')      
     yield put({ type: 'FETCH_SUCESS', uu: users });
   } catch (e) {
